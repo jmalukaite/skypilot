@@ -13,7 +13,7 @@ def test_compute_server_config(cpu_count, mem_size_gb):
     assert c.num_server_workers == 4
     assert c.long_worker_config.garanteed_parallelism == 8
     assert c.long_worker_config.burstable_parallelism == 0
-    assert c.short_worker_config.garanteed_parallelism == 33
+    assert c.short_worker_config.garanteed_parallelism == 36
     assert c.short_worker_config.burstable_parallelism == 0
     assert c.queue_backend == config.QueueBackend.MULTIPROCESSING
 
@@ -22,7 +22,7 @@ def test_compute_server_config(cpu_count, mem_size_gb):
     assert c.num_server_workers == 1
     assert c.long_worker_config.garanteed_parallelism == 4
     assert c.long_worker_config.burstable_parallelism == 1024
-    assert c.short_worker_config.garanteed_parallelism == 40
+    assert c.short_worker_config.garanteed_parallelism == 42
     assert c.short_worker_config.burstable_parallelism == 1024
     assert c.queue_backend == config.QueueBackend.LOCAL
 
@@ -88,7 +88,7 @@ def test_parallel_size_short():
     num_server_workers = 2
     num_long_workers = 8
     mem_size_gb = 13.7
-    expected = 29
+    expected = 30
     assert config._max_short_worker_parallism(mem_size_gb, num_server_workers,
                                               num_long_workers) == expected
 
