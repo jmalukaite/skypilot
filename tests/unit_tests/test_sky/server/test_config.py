@@ -13,7 +13,7 @@ def test_compute_server_config(cpu_count, mem_size_gb):
     assert c.num_server_workers == 4
     assert c.long_worker_config.garanteed_parallelism == 8
     assert c.long_worker_config.burstable_parallelism == 0
-    assert c.short_worker_config.garanteed_parallelism == 43
+    assert c.short_worker_config.garanteed_parallelism == 33
     assert c.short_worker_config.burstable_parallelism == 0
     assert c.queue_backend == config.QueueBackend.MULTIPROCESSING
 
@@ -22,7 +22,7 @@ def test_compute_server_config(cpu_count, mem_size_gb):
     assert c.num_server_workers == 1
     assert c.long_worker_config.garanteed_parallelism == 4
     assert c.long_worker_config.burstable_parallelism == 1024
-    assert c.short_worker_config.garanteed_parallelism == 49
+    assert c.short_worker_config.garanteed_parallelism == 40
     assert c.short_worker_config.burstable_parallelism == 1024
     assert c.queue_backend == config.QueueBackend.LOCAL
 
@@ -54,19 +54,22 @@ def test_parallel_size_long():
     cpu_count = 4
     mem_size_gb = 2
     expected = 1
-    assert config._max_long_worker_parallism(cpu_count, mem_size_gb) == expected
+    assert config._max_long_worker_parallism(cpu_count, mem_size_gb,
+                                             0) == expected
 
     # Test with sufficient memory
     cpu_count = 4
     mem_size_gb = 12.5
     expected = 8
-    assert config._max_long_worker_parallism(cpu_count, mem_size_gb) == expected
+    assert config._max_long_worker_parallism(cpu_count, mem_size_gb,
+                                             0) == expected
 
     # Test with limited memory
     cpu_count = 4
     mem_size_gb = 2.7
     expected = 1
-    assert config._max_long_worker_parallism(cpu_count, mem_size_gb) == expected
+    assert config._max_long_worker_parallism(cpu_count, mem_size_gb,
+                                             0) == expected
 
 
 def test_parallel_size_short():
@@ -74,19 +77,19 @@ def test_parallel_size_short():
     blocking_size = 1
     mem_size_gb = 2
     expected = 2
-    assert config._max_short_worker_parallism(mem_size_gb,
+    assert config._max_short_worker_parallism(mem_size_gb, 0,
                                               blocking_size) == expected
 
     # Test with sufficient memory
     blocking_size = 8
     mem_size_gb = 12.5
     expected = 29
-    assert config._max_short_worker_parallism(mem_size_gb,
+    assert config._max_short_worker_parallism(mem_size_gb, 0,
                                               blocking_size) == expected
 
     # Test with limited memory
     blocking_size = 1
     mem_size_gb = 3
     expected = 2
-    assert config._max_short_worker_parallism(mem_size_gb,
+    assert config._max_short_worker_parallism(mem_size_gb, 0,
                                               blocking_size) == expected
